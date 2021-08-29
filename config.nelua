@@ -1,0 +1,5 @@
+##[[
+	cflags '-L lib'
+	cflags '-I include'
+	cflags '-static'
+]]
