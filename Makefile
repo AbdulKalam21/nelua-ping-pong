@@ -1,3 +1,3 @@
 deault:
-	clear
-	nelua.sh ping-pong.nelua --release --turbo --output bin/ping-pong
+	nelua main.nelua --turbo --output bin/ping-pong.exe --cflags="-L lib -I include -static"
+

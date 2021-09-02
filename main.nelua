@@ -1,0 +1,105 @@
+require "raylib"
+
+local screenWidth:uint16 <comptime> = 1280;
+local screenHeight:uint16 <comptime> = 720;
+
+local ballSpeed:int16 <const> = 500;
+local ballXVelocity:int16 = -ballSpeed;
+local ballYVelocity:float32 = 0;
+
+local ai:Rectangle = { screenWidth / 1.2, screenHeight / 2 - 200 / 2, 40, 150};
+local ball:Rectangle = { screenWidth / 2 - 50, screenHeight / 2 - 50, 40, 40};
+local player:Rectangle = {screenWidth / 8, screenHeight / 2 - 200 / 2 , 40, 150};
+
+local aiYVelocity:int16 = 0;
+local aiSpeed:int16 <comptime> = 700;
+
+SetConfigFlags(FLAG_VSYNC_HINT);
+InitWindow(screenWidth, screenHeight, "Ping Pong");
+
+while not WindowShouldClose() do
+
+	local dt:float32 = GetFrameTime();
+
+	ball.x = ball.x + ballXVelocity * dt;
+	ball.y = ball.y + ballYVelocity * dt;
+	ai.y = ai.y + aiYVelocity * dt;
+
+	if ball.x > player.x - ball.width and ball.x < player.x + player.width and ball.y > player.y - ball.height and ball.y < player.y + player.height then
+		ballXVelocity = ballSpeed;
+		local middleBall = ball.y + ball.height / 2;
+		local middlePlayer = player.y + player.height / 2;
+		local collisionPosition = middleBall - middlePlayer;
+		ballYVelocity = collisionPosition * 5;
+	end
+
+	if ball.x > ai.x - ball.width and ball.x < ai.x + ai.width and ball.y > ai.y - ball.height and ball.y < ai.y + ai.height then
+		ballXVelocity = -ballSpeed;
+		local middleBall = ball.y + ball.height / 2;
+        local middleAi = ai.y + ai.height / 2;
+		local collisionPosition = middleBall - middleAi;
+		ballYVelocity = collisionPosition * 5;
+	end
+
+    if ball.y < ai.y - ball.height then
+		aiYVelocity = -aiSpeed;
+    elseif ball.y > ai.y + ai.height then
+        aiYVelocity = aiSpeed;
+    else aiYVelocity = 0;
+   	end
+
+	if ball.y < 0 then
+    	ball.y = 0;
+    	ballYVelocity = -ballYVelocity;
+    end
+	if ball.y > screenHeight - ball.height then
+    	ball.y = screenHeight - ball.height;
+    	ballYVelocity = -ballYVelocity;
+    end
+
+	if ball.x < 0 then
+    	ball.x = screenWidth / 2 - ball.width;
+    	ball.y = screenHeight / 2 - ball.height;
+    	ballYVelocity = 0;
+    	ballXVelocity = ballSpeed;
+    end
+
+	if ball.x > screenWidth - ball.width then
+    	ball.x = screenWidth / 2 - ball.width;
+    	ball.y = screenHeight / 2 - ball.height;
+    	ballYVelocity = 0;
+    	ballXVelocity = -ballSpeed;
+    end
+
+	if player.y < 0 then
+    	player.y = 0;
+    end
+
+	if player.y > screenHeight - player.height then
+    	player.y = screenHeight - player.height;
+    end
+
+    if IsKeyDown(KEY_UP) then
+    	player.y = player.y - 700 * dt;   
+    end
+    if IsKeyDown(KEY_DOWN) then
+    	player.y = player.y + 700 * dt;
+    end
+
+	BeginDrawing()
+
+        ClearBackground(BLACK);
+
+        DrawFPS(0,0);
+
+        DrawRectangleRec(player, RAYWHITE);
+
+        DrawRectangleRec(ball, RAYWHITE);
+
+        DrawRectangleRec(ai, RAYWHITE);
+
+	EndDrawing()
+	
+end
+
+    CloseWindow()
