@@ -3,15 +3,15 @@ require "raylib"
 local screenWidth:uint16 <comptime> = 1280;
 local screenHeight:uint16 <comptime> = 720;
 
-local ballSpeed:int16 <const> = 500;
-local ballXVelocity:int16 = -ballSpeed;
-local ballYVelocity:float32 = 0;
+local ballSpeed:int16 <comptime> = 500;
+local ballXVelocity:integer = -ballSpeed;
+local ballYVelocity:float64 = 0;
 
 local ai:Rectangle = { screenWidth / 1.2, screenHeight / 2 - 200 / 2, 40, 150};
 local ball:Rectangle = { screenWidth / 2 - 50, screenHeight / 2 - 50, 40, 40};
 local player:Rectangle = {screenWidth / 8, screenHeight / 2 - 200 / 2 , 40, 150};
 
-local aiYVelocity:int16 = 0;
+local aiYVelocity:integer = 0;
 local aiSpeed:int16 <comptime> = 700;
 
 SetConfigFlags(FLAG_VSYNC_HINT);
